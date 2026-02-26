@@ -1,0 +1,17 @@
+:root {
+  --bg: oklch(19% 0 0);
+  --surface: oklch(17% 0 0);
+  --border: oklch(25% 0 0);
+  --muted: oklch(55% 0 0);
+  --subtle: oklch(62% 0 0);
+  --text: oklch(82% 0 0);
+  --heading: oklch(93% 0 0);
+}
+
+html, body { background: var(--surface); }
+.content { background: var(--bg); }
+header { background: rgba(30,30,30,.85); }
+header nav a:hover, header nav a.active { background: var(--border); }
+::selection { background: var(--heading); color: var(--bg); }
+pre { background: oklch(12% 0 0); }
+.draft-label { color: #fb7185; }

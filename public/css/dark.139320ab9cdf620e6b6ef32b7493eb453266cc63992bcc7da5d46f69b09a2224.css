@@ -1,0 +1,137 @@
+html {
+  color: white;
+  background-color: var(--negative);
+}
+
+::-moz-selection {
+  background: var(--);
+  color: var(--negative);
+  text-shadow: none;
+}
+
+::selection {
+  background: var(--);
+  color:var(--negative);
+  text-shadow: none;
+}
+
+hr {
+  border-top: 3px dotted blue;
+}
+
+code {
+  background-color: lightblue;
+  color: black;
+  text-decoration: bold;
+  padding: 0.1em 0.2em;
+}
+
+p code {
+  background-color: #3d415a;
+  color: white;
+  padding: 0.1em 0.2em;
+  border-radius: 5px;
+  font-style: italic;
+}
+
+pre {
+  background-color: #272822;
+  line-height: 1.4;
+  overflow-x: auto;
+  padding: 1em;
+}
+
+blockquote {
+  border-color: blue;
+}
+
+a {
+  border-bottom: 3px solid var(--primary);
+  color: inherit;
+}
+
+a:hover {
+  background-color: var(--primary);
+  color: var(--negative);
+}
+
+/* .site-description a {
+  color: #ddd;
+} */
+
+.tags a {
+  border-bottom: 3px solid var(--negative);
+}
+
+.tags a:hover {
+  background-color: var(--negative);
+  color: black;
+}
+
+.site-title a {
+  color: white;
+  text-decoration: none !important;
+}
+
+.soc:hover {
+  color: black;
+}
+
+.draft-label {
+  color: var(--negativeMaincolor);
+  background-color: blue;
+}
+
+.highlight pre code[class=language-javaScript]::before,
+.highlight pre code[class="language-js"]::before {
+  content: "js";
+  background: #f7df1e;
+  color: black;
+}
+
+.highlight pre code[class*='language-yml']::before,
+.highlight pre code[class*='language-yaml']::before {
+  content: 'yaml';
+  background: #f71e6a;
+  color: white;
+}
+
+.highlight pre code[class*='language-shell']::before,
+.highlight pre code[class*='language-bash']::before,
+.highlight pre code[class*='language-sh']::before {
+  content: 'shell';
+  background: green;
+  color: white
+}
+
+.highlight pre code[class*='language-json']::before {
+  content: 'json';
+  background: dodgerblue;
+  color: #000000
+}
+
+.highlight pre code[class*='language-python']::before,
+.highlight pre code[class*='language-py']::before {
+  content: 'py';
+  background: blue;
+  color: yellow;
+}
+
+.highlight pre code[class*='language-css']::before {
+  content: 'css';
+  background: cyan;
+  color: black;
+}
+
+.highlight pre code[class*='language-go']::before {
+  content: 'Go';
+  background: cyan;
+  color: royalblue;
+}
+
+.highlight pre code[class*='language-md']::before,
+.highlight pre code[class*='language-md']::before {
+  content: 'Markdown';
+  background: royalblue;
+  color: whitesmoke;
+}

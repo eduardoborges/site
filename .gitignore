@@ -1,5 +1,4 @@
-dist
-public
-.DS_Store
 node_modules
-.tmp
+dist
+.astro
+.DS_Store

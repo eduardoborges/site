@@ -1,0 +1,81 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/main.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  article?: {
+    publishedTime: string;
+    tags?: string[];
+  };
+}
+
+const { title, description, ogImage, article } = Astro.props;
+const siteTitle = 'Eduardo';
+const pageTitle = title === siteTitle ? siteTitle : `${title} - ${siteTitle}`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = ogImage ? new URL(ogImage, Astro.site).href : undefined;
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{pageTitle}</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="canonical" href={canonicalURL} />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <meta name="description" content={description || 'blog do eduardo borges — staff engineer, baiano, ex-vaqueiro.'} />
+  <meta name="author" content="Eduardo Borges" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content={article ? 'article' : 'website'} />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description || 'blog do eduardo borges — staff engineer, baiano, ex-vaqueiro.'} />
+  <meta property="og:locale" content="pt_BR" />
+  {ogImageURL && <meta property="og:image" content={ogImageURL} />}
+  {article && <meta property="article:published_time" content={article.publishedTime} />}
+  {article?.tags?.map(tag => <meta property="article:tag" content={tag} />)}
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={pageTitle} />
+  <meta name="twitter:description" content={description || 'blog do eduardo borges — staff engineer, baiano, ex-vaqueiro.'} />
+  {ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
+
+  <!-- Preconnect -->
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">pular para o conteúdo</a>
+  <div class="content">
+    <Header />
+    <div id="main-content">
+      <slot />
+    </div>
+    <Footer />
+  </div>
+
+  <!-- gtag deferred -->
+  <script is:inline>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-9MMLCJ5CMK';
+        s.async = true;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-9MMLCJ5CMK');
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

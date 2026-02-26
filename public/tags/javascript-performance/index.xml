@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javascript, Performance on Eduardo</title>
+    <link>http://localhost:1313/tags/javascript-performance/</link>
+    <description>Recent content in Javascript, Performance on Eduardo</description>
+    <generator>Hugo</generator>
+    <language>pt-BR</language>
+    <lastBuildDate>Thu, 17 Nov 2022 23:19:30 -0300</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/javascript-performance/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Predicados de busca em Arrays com um antigo vilão, o `this`</title>
+      <link>http://localhost:1313/posts/predicados-em-arrays-com-um-antigo-vilao-o-this/</link>
+      <pubDate>Thu, 17 Nov 2022 23:19:30 -0300</pubDate>
+      <guid>http://localhost:1313/posts/predicados-em-arrays-com-um-antigo-vilao-o-this/</guid>
+      <description>&lt;p&gt;&lt;em&gt;A primeira postagem é especial, então escrevi ouvindo &lt;a href=&#34;https://open.spotify.com/album/79dL7FLiJFOO0EoehUHQBv?si=xNdnkscPStmVMW-TD2i7-w&#34;&gt;este álbum maravilhoso&lt;/a&gt; do Kevin.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;prefácio&#34;&gt;Prefácio&lt;/h2&gt;&#xA;&lt;p&gt;É, o &lt;code&gt;this&lt;/code&gt; é odiado entre quase todos os &lt;em&gt;devs&lt;/em&gt; do &lt;em&gt;javascripto&lt;/em&gt;, talvez seja o elemento mais odiado e se você ainda não odeia, ainda vai odiar. A razão é bem conhecida, seu comportamento e valor é meio estranho, assim como todo JS, mas ele em especial pois &lt;a href=&#34;https://www.30secondsofcode.org/articles/s/javascript-this&#34;&gt;depende do contexto que se encontra&lt;/a&gt;, ou seja, do objeto que está em execução naquele momento. Vejamos alguns exemplos:&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

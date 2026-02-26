@@ -1,0 +1,75 @@
+:root {
+  --gray-1: oklch(17% 0 0);
+  --gray-2: oklch(19% 0 0);
+  --gray-3: oklch(25% 0 0);
+  --gray-4: oklch(30% 0 0);
+  --gray-6: oklch(55% 0 0);
+  --gray-7: oklch(62% 0 0);
+  --gray-8: oklch(70% 0 0);
+  --gray-10: oklch(82% 0 0);
+  --gray-12: oklch(93% 0 0);
+}
+
+html,
+body {
+  background: var(--gray-1);
+  color: var(--gray-10);
+}
+
+.content {
+  background: var(--gray-2);
+  border-color: var(--gray-3);
+}
+
+header {
+  background: rgba(30, 30, 30, 0.85);
+}
+
+header nav a:hover,
+header nav a.active {
+  background: var(--gray-3);
+}
+
+::selection {
+  background: var(--gray-12);
+  color: var(--gray-2);
+}
+
+code {
+  background-color: var(--gray-3);
+  border-color: var(--gray-4);
+}
+
+pre {
+  background-color: oklch(12% 0 0);
+}
+
+.tldr {
+  background: var(--gray-3);
+  border-color: var(--gray-4);
+}
+
+.callout {
+  background-color: var(--gray-3);
+  border-color: var(--gray-4);
+}
+
+table th {
+  background: var(--gray-3);
+}
+
+.tags a {
+  background: var(--gray-3);
+  border-color: var(--gray-4);
+}
+
+.tags a:hover {
+  background: var(--gray-12);
+  color: var(--gray-2);
+  border-color: var(--gray-12);
+}
+
+.draft-label {
+  color: #fb7185;
+  background: #fb2c361a;
+}

@@ -12,25 +12,20 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    env:
-      PUPPETEER_EXEC_PATH: "/usr/bin/google-chrome"
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: '0.119.0'
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@latest --activate
 
       - name: Install Deps
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: npm run build
-
+        run: pnpm build
 
       - name: Deploy to CloudFlare
         uses: cloudflare/wrangler-action@v3
@@ -38,4 +33,3 @@ jobs:
           apiToken: ${{ secrets.CF_TOKEN }}
           command: |
             pages deploy ./dist --project-name=blog --branch=main
-  
