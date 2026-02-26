@@ -15,7 +15,4 @@ export default defineConfig({
       [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }],
     ],
   },
-  image: {
-    service: { entrypoint: 'astro/assets/services/sharp' },
-  },
 });

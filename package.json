@@ -1,14 +1,13 @@
 {
-  "name": "blog",
+  "name": "site",
   "type": "module",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/sitemap": "^3.7.0",
     "astro": "^5.18.0",
     "rehype-external-links": "^3.0.0"
