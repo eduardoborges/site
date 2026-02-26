@@ -1,4 +1,5 @@
 /*
+  Cache-Control: public, max-age=0, must-revalidate
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -13,8 +14,14 @@
 /favicon.png
   Cache-Control: public, max-age=86400
 
+/favicon-32.png
+  Cache-Control: public, max-age=86400
+
+/favicon-16.png
+  Cache-Control: public, max-age=86400
+
 /main.js
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=86400
 
 /me.jpeg
   Cache-Control: public, max-age=86400
