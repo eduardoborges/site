@@ -139,7 +139,7 @@ main {
 
 .hero {
   padding: 56px 0 48px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px dashed var(--border);
   margin-bottom: 40px;
 }
 
@@ -228,7 +228,7 @@ ul {
 
 li.post {
   padding: 12px 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px dashed var(--border);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -236,7 +236,7 @@ li.post {
 }
 
 li.post:first-child {
-  border-top: 1px solid var(--border);
+  border-top: 1px dashed var(--border);
 }
 
 li.post a {
@@ -584,7 +584,7 @@ table th {
 
 footer {
   padding: 24px 32px;
-  border-top: 1px solid var(--border);
+  border-top: 1px dashed var(--border);
   font-size: .85rem;
   color: var(--muted);
 }
