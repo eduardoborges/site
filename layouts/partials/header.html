@@ -30,16 +30,9 @@
 	{{- template "_internal/opengraph.html" . -}}
 	{{- template "_internal/twitter_cards.html" . -}}
 	
-	<script src="https://unpkg.com/feather-icons"></script>
-	
-	{{ $fontstyle := resources.Get "css/fonts.css" | fingerprint }}
-	<link href="{{ $fontstyle.Permalink }}" rel="stylesheet">
-	
 	{{ $style := resources.Get "css/main.css" | fingerprint }}
 	<link rel="stylesheet" type="text/css" media="screen" href="{{ $style.Permalink }}" />
 
-	{{ $darkstyle := resources.Get "css/dark.css" | fingerprint }}
-	<link id="darkModeStyle" rel="stylesheet" type="text/css" href="{{ $darkstyle.Permalink }}" media="(prefers-color-scheme: dark)" />
 	
 	<!-- Custom CSS style get applied last -->
 	{{- if isset .Site.Params "customcss" }}

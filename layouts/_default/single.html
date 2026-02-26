@@ -2,17 +2,15 @@
 <main>
 	<article>
 		<div class="title">
-			<h1 class="title">{{ .Title }}</h1>
+			<h1>{{ .Title }}</h1>
 			<div class="meta">postado em {{ dateFormat "Jan 2, 2006" .Date }}{{ if .Draft }} <span class="draft-label">RASCUNHO</span> {{ end }}</div>
-			<br>
 			<small>
 			compartilhe no
-			<a href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink }}" target="_blank"><i data-feather="linkedin"></i>linkedinho</a>
+			<a href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink }}" target="_blank">linkedin</a>
 			ou na
-			<a href="http://twitter.com/share?url={{ .Permalink }}" target="_blank"><i data-feather="twitter"></i>rede do ellon musk</a>
-		</small>
+			<a href="http://twitter.com/share?url={{ .Permalink }}" target="_blank">rede do ellon musk</a>
+			</small>
 		</div>
-
 
 		{{ if isset .Params "tldr" }}
 		<div class="tldr">

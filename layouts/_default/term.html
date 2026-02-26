@@ -1,4 +1,5 @@
 {{ define "main" }}
+<main>
 {{ if isset .Data "Term" }}
 <h1>Entries tagged - "{{ .Data.Term }}"</h1>
 {{ else }}
@@ -14,4 +15,5 @@
 		{{- end -}}
 	{{- end -}}
 </ul>
+</main>
 {{ end }}
