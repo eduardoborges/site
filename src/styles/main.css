@@ -211,7 +211,7 @@ main {
 
 /* Section titles */
 
-main > h3 {
+main > h2 {
   font-size: .8rem;
   letter-spacing: .08em;
   color: var(--muted);

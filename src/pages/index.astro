@@ -34,13 +34,15 @@ const formatDate = (date: Date) =>
       <small>· rastreado por lastfm</small>
     </p>
 
-    <h3>postagens do blog</h3>
-    {posts.map(post => (
-      <li class="post">
-        <a href={`/posts/${post.data.slug || post.id}`}>{post.data.title}</a>
-        <time class="meta" datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-      </li>
-    ))}
+    <h2>postagens do blog</h2>
+    <ul>
+      {posts.map(post => (
+        <li class="post">
+          <a href={`/posts/${post.data.slug || post.id}`}>{post.data.title}</a>
+          <time class="meta" datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        </li>
+      ))}
+    </ul>
   </main>
 
   <script is:inline src="/main.js"></script>

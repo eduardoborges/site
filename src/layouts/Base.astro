@@ -26,7 +26,8 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site).href : undefined;
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{pageTitle}</title>
-  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
   <link rel="canonical" href={canonicalURL} />
   <link rel="sitemap" href="/sitemap-index.xml" />
   <meta name="description" content={description || 'blog do eduardo borges — staff engineer, baiano, ex-vaqueiro.'} />
@@ -49,7 +50,10 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site).href : undefined;
   {ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
 
   <!-- Preconnect -->
+  <link rel="preconnect" href="https://www.googletagmanager.com" />
   <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+  <link rel="preconnect" href="https://tools.borges.workers.dev" />
+  <link rel="dns-prefetch" href="https://tools.borges.workers.dev" />
 </head>
 <body>
   <a href="#main-content" class="skip-link">pular para o conteúdo</a>

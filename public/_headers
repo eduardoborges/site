@@ -1,0 +1,20 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://tools.borges.workers.dev https://www.google-analytics.com https://cloudflareinsights.com; font-src 'self'; frame-ancestors 'none'
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/favicon.png
+  Cache-Control: public, max-age=86400
+
+/main.js
+  Cache-Control: public, max-age=3600
+
+/me.jpeg
+  Cache-Control: public, max-age=86400
