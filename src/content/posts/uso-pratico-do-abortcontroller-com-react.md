@@ -6,6 +6,10 @@ tags: ["javascript", "react", "performance"]
 draft: false
 ---
 
+Rapaz, eu tava revisando código de uns devs e comecei a perceber que raramente vejo o uso do `AbortController`, o que é no minimo curioso visto que resolve um bucado de problemas que a gente escreve código pra ca**te pra resolver.
+
+Então alguem tem que falar sobre isso, né?
+
 ## O problema que você provavelmente ignora
 
 Sabe aquele `useEffect` que faz um fetch quando o componente monta? Você já parou pra pensar o que acontece quando o usuário navega pra outra página antes da requisição terminar?
