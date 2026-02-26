@@ -21,7 +21,7 @@ function foo(string = ''){
   return this === window // true
 }
 
-// 
+//
 const el = document.getElementById('my-el');
 
 el.addEventListener('click', function() {
@@ -57,7 +57,7 @@ anotherObj.foo = 1;
 console.log(anotherObj.fn()); // { foo: 1 }
 ```
 
-Então, podemos concluir que é uma faca de *dois legumes*, e pega muita gente. Mas capturar referências do objeto em execução muitas vezes pode simplificar coisinhas do cotidiano. 
+Então, podemos concluir que é uma faca de *dois legumes*, e pega muita gente. Mas capturar referências do objeto em execução muitas vezes pode simplificar coisinhas do cotidiano.
 
 ## Arrays feat: arrays
 
