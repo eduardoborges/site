@@ -13,7 +13,7 @@ const formatDate = (date: Date) =>
 <Base title="Eduardo" ogImage="/me.jpeg">
   <main>
     <div class="hero">
-      <h1>Eduardo Borges<span class="hero-dot">.</span></h1>
+      <h1><span class="hero-typewriter" data-text="Eduardo Borges">Eduardo Borges</span><span class="hero-dot">.</span><span class="hero-cursor" aria-hidden="true"></span></h1>
       <p>
         Staff Engineer <strong>@</strong> <a href="https://www.solfacil.com.br" target="_blank" rel="noopener noreferrer">Solfácil</a>,
         tornando a energia solar acessível a todos os brasileiros.
@@ -30,7 +30,7 @@ const formatDate = (date: Date) =>
     </div>
 
     <p class="now-playing">
-      ouvindo <a href="" id="last-played">bip bop carregando...</a>
+      <span>ouvindo <a href="" id="last-played">...</a></span>
       <small>· rastreado por lastfm</small>
     </p>
 
@@ -46,6 +46,22 @@ const formatDate = (date: Date) =>
   </main>
 
   <script>
+    // Typewriter animation
+    const tw = document.querySelector('.hero-typewriter') as HTMLElement;
+    if (tw) {
+      const full = tw.dataset.text ?? tw.textContent ?? '';
+      tw.textContent = '';
+      let i = 0;
+      const type = () => {
+        if (i <= full.length) {
+          tw.textContent = full.slice(0, i++);
+          if (i <= full.length) setTimeout(type, 55);
+        }
+      };
+      setTimeout(type, 400);
+    }
+
+    // Last.fm
     const el = document.getElementById("last-played") as HTMLAnchorElement;
     (async () => {
       try {
@@ -54,7 +70,7 @@ const formatDate = (date: Date) =>
         el.innerText = `${String(track.name).toLowerCase()} - ${String(track.artist["#text"]).toLowerCase()}`;
         el.href = String(track.url);
       } catch {
-        el.innerText = "[oops 😔... something went wrong]";
+        el.innerText = "[oops 😔... algo deu errado]";
       }
     })();
   </script>
