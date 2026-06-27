@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import AsciiPortrait from '../components/AsciiPortrait.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('posts'))
@@ -13,19 +14,27 @@ const formatDate = (date: Date) =>
 <Base title="Eduardo" ogImage="/me.jpeg">
   <main>
     <div class="hero">
-      <h1><span class="hero-typewriter" data-text="Eduardo Borges">Eduardo Borges</span><span class="hero-dot">.</span><span class="hero-cursor" aria-hidden="true"></span></h1>
-      <p>
-        Staff Engineer <strong>@</strong> <a href="https://www.solfacil.com.br" target="_blank" rel="noopener noreferrer">Solfácil</a>,
-        tornando a energia solar acessível a todos os brasileiros.
-        Antes disso, Staff Engineer <strong>@</strong> <a href="https://www.stone.co" target="_blank" rel="noopener noreferrer">Stone.Co</a>,
-        revolucionando o mercado de pagamentos, crédito e bancário no Brasil.
-      </p>
-      <p><strong>Brasileiro. Baiano. <a href="https://pt.wikipedia.org/wiki/Vaqueiro" target="_blank" rel="noopener noreferrer">Ex-vaqueiro</a></strong>.</p>
+      <div class="hero-layout">
+        <div class="hero-text">
+          <h1><span class="hero-typewriter" data-text="Eduardo Borges">Eduardo Borges</span><span class="hero-dot">.</span><span class="hero-cursor" aria-hidden="true"></span></h1>
+          <p>
+            Staff Engineer <strong>@</strong> <a href="https://www.solfacil.com.br" target="_blank" rel="noopener noreferrer">Solfácil</a>,
+            tornando a energia solar acessível a todos os brasileiros.
+            Antes disso, Staff Engineer <strong>@</strong> <a href="https://www.stone.co" target="_blank" rel="noopener noreferrer">Stone.Co</a>,
+            revolucionando o mercado de pagamentos, crédito e bancário no Brasil.
+          </p>
+          <p><strong>Brasileiro. Baiano. <a href="https://pt.wikipedia.org/wiki/Vaqueiro" target="_blank" rel="noopener noreferrer">Ex-vaqueiro</a></strong>.</p>
 
-      <div class="hero-links">
-        <a href="https://linkedin.com/in/euduardoborges" target="_blank" rel="noopener noreferrer">linkedin</a>
-        <span class="separator">·</span>
-        <a href="https://github.com/eduardoborges" target="_blank" rel="noopener noreferrer">github</a>
+          <div class="hero-links">
+            <a href="https://linkedin.com/in/euduardoborges" target="_blank" rel="noopener noreferrer">linkedin</a>
+            <span class="separator">·</span>
+            <a href="https://github.com/eduardoborges" target="_blank" rel="noopener noreferrer">github</a>
+          </div>
+        </div>
+
+        <div class="hero-portrait">
+          <AsciiPortrait />
+        </div>
       </div>
     </div>
 

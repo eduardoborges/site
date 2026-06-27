@@ -1,0 +1,106 @@
+<div class="ascii-portrait" aria-hidden="true">
+  <div class="ascii-portrait-inner">
+    <div class="ascii-portrait-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="ascii-portrait-label">eduardo.jpg</span>
+    </div>
+    <pre id="ascii-portrait-pre"></pre>
+  </div>
+</div>
+
+<style>
+.ascii-portrait {
+  margin-top: 36px;
+  display: inline-block;
+}
+
+.ascii-portrait-inner {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #060606;
+  display: inline-block;
+}
+
+.ascii-portrait-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  background: #111;
+  border-bottom: 1px solid var(--border);
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.dot.r { background: #ff5f57; }
+.dot.y { background: #febc2e; }
+.dot.g { background: #28c840; }
+
+.ascii-portrait-label {
+  font-size: .65rem;
+  color: var(--muted);
+  margin-left: 4px;
+  font-family: var(--font);
+}
+
+#ascii-portrait-pre {
+  font-family: var(--font);
+  font-size: 7.5px;
+  line-height: 11px;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  padding: 10px 12px;
+  margin: 0;
+  user-select: none;
+  white-space: pre;
+  opacity: 0.85;
+}
+</style>
+
+<script>
+const ASCII_LINES = ["---;;;;;;;--------;;;------------------~~-~~~~~~~+++","---;;;;;;--------;;;;---------------------~~~~~~~+~~","--;;--------;----;;:;;----;;;;;;;;--------~~~~++++++",";;;;;;;-------~~~---~~~++++++++====*****************","+++====****###########################************==","%%%%%%%%%%%%%%%%%%%%%##############***************==","################*****##############**************===","**#########=+++++~~~~*############***************===","~#*#########=~~~~~~~~+############**************====","##********###=======**#############***********======","##***********###############****#%%#*********=======","%#****===************####*******%@@%=******=========","%%##**=======*******************#%%#=****===========","%@%%##**======***************************===========","*#%@%%##**===************#***************===========","+*##@@%%##*********########%####*#%%==*======+++~++=","';+###@@%%%###*##%*=+;,,'',,:-+*####=****======+~===",",,,;=**#@@@%%%@%*;`            .:*###******=========",",,:,,-=*#%@@@@+'    ....``',,:'  .#%*****======+++-~","+;,,,:;~=##%*:   `,;;;--~+++==+-:``*#**#===+++++++~+","@%*~:::;;~*;    .,-------~+++~----:,=***=++++~~~~---","%=#@%=-;--;   ...':-----~+=*===++++;-=*=~~~---;;;;;:","%-*#=%+#:~, ``',:-+~~+~~-~~~+==+==++~+*=----;;::::,,","%+**;%=%,*,`,::-*==+~:'````',;-----~=~+~;;;:::,,,,'.",  "%;**~#=#,%;;~~+*%=,`         .::`'',,:-;:,,,,,'''.  ","%+#=*%**,@=++++-~-  '`.  `''` ``   ..`~~--;;:,,,'   ","##%#%#=*;=-:-=~-;;,`'`    .';.    `,;-~;.'-;;:,,,  .","*+@*%%%*.:;-*%*=+~:,;,`   `,'.~~  .,:~;+,:-;;;:,,.,-","*+%+#%%+ ;:~=#**=+-,::,'',,.`~*%~'':~#+=:+~-;;;::;--","**@~*%@=,`.+-**==++~:,'''`.,+==**=-:-=~';=~---;;:;--","`'::;-+--+;-,-**=+==+;,,' '-,:-;;~;;~~::;++~~--;;--~",",'''':;~==+-.`-**==+~-;;::'.   ..';~==#--=+~~-;;;;--","~+~~+==~~++-. `;+==+~-;:--:'     .;~===-++~~---;;;-~","--~--~-~~+=+. .',;~+~;,``.         .-;-=*++~~~-;;;-~","*=~#~#;=%**~   ``',:;,         ..    ,**=++~~--;;--~","@%+@=%=-@##~    ...'`    ``'''',;'   '===++~~~-;;;-~","~%+*#*%:#@%-             ..      .   -*==+++~~--;;-~",";%*-#=%-=@*+.                        ~*==++~~---;;-~","+#%-%~=*-=-=,                        ;++++~~~~-;;;--","=~%=%#~~-;'--'                       :~~~+~~---;;;;-"];
+
+const CHARS = " .`',:;-~+=*#%@";
+const pre = document.getElementById('ascii-portrait-pre');
+if (!pre) throw new Error('no pre');
+
+// Initialize all lines as empty
+const lineEls = ASCII_LINES.map(() => {
+  const span = document.createElement('span');
+  span.style.display = 'block';
+  span.textContent = ' '.repeat(52);
+  pre.appendChild(span);
+  return span;
+});
+
+function randomChar() {
+  return CHARS[Math.floor(Math.random() * CHARS.length)];
+}
+
+function glitchLine(el, target, duration) {
+  const start = performance.now();
+  const len = target.length;
+  function frame() {
+    const t = Math.min((performance.now() - start) / duration, 1);
+    let s = '';
+    for (let i = 0; i < len; i++) {
+      // Each char locks in probabilistically as t increases
+      s += Math.random() < t * 1.4 || target[i] === ' ' ? target[i] : randomChar();
+    }
+    el.textContent = s;
+    if (t < 1) requestAnimationFrame(frame);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(frame);
+}
+
+// Reveal lines top to bottom with staggered delay
+ASCII_LINES.forEach((line, i) => {
+  setTimeout(() => glitchLine(lineEls[i], line, 220), i * 28);
+});
+</script>

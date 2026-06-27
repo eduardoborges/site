@@ -332,6 +332,32 @@ main {
   line-height: 1;
 }
 
+/* Hero two-column layout */
+.hero-layout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.hero-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.hero-portrait {
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .hero-layout {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .hero-portrait {
+    align-self: center;
+  }
+}
+
 /* ─────────────────────────────────────
    NOW PLAYING
 ───────────────────────────────────── */
