@@ -9,7 +9,7 @@
     "ship": "astro build && wrangler pages deploy dist --project-name=site --branch=main"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "astro": "^5.18.0",
     "rehype-external-links": "^3.0.0"
