@@ -1,12 +1,16 @@
 ---
 const { pathname } = Astro.url;
+const isEn = pathname === '/en' || pathname.startsWith('/en/');
 ---
 
 <header>
-  <a href="/" class="header-logo" aria-label="página inicial">eduardo<span>.</span></a>
-  <nav aria-label="navegação principal">
+  <a href={isEn ? '/en/' : '/'} class="header-logo" aria-label={isEn ? 'home' : 'página inicial'}>eduardo<span>.</span></a>
+  <nav aria-label={isEn ? 'main navigation' : 'navegação principal'}>
     <a href="/posts" class={pathname.startsWith('/posts') ? 'active' : ''}>blog</a>
     <a href="https://linkedin.com/in/euduardoborges" target="_blank" rel="noopener noreferrer">linkedin</a>
     <a href="https://github.com/eduardoborges" target="_blank" rel="noopener noreferrer">github</a>
+    <span class="lang">
+      <a href="/" class={!isEn ? 'active' : ''} aria-label="português">pt</a>/<a href="/en/" class={isEn ? 'active' : ''} aria-label="english">en</a>
+    </span>
   </nav>
 </header>

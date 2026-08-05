@@ -5,6 +5,11 @@ import rehypeExternalLinks from 'rehype-external-links';
 export default defineConfig({
   site: 'https://eduardoborges.dev',
   output: 'static',
+  i18n: {
+    defaultLocale: 'pt-br',
+    locales: ['pt-br', 'en'],
+    routing: { prefixDefaultLocale: false },
+  },
   compressHTML: true,
   integrations: [sitemap()],
   markdown: {

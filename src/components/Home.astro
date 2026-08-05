@@ -1,0 +1,130 @@
+---
+import Base from '../layouts/Base.astro';
+import AsciiPortrait from './AsciiPortrait.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  lang: 'pt' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  pt: {
+    description: 'site do eduardo borges — engenheiro de software, baiano, ex-vaqueiro.',
+    bioRole: 'construindo agentes de IA para law tech.',
+    bioYears: '13+ anos entre fintech, banking, crypto e e-commerce, passando por',
+    bioAnd: 'e',
+    bioOss: 'Mantenho projetos open source com 100k+ downloads semanais.',
+    listening: 'ouvindo',
+    tracked: '· rastreado por lastfm',
+    loading: 'bip bop carregando...',
+    posts: 'postagens do blog',
+    xp: 'experiência',
+    present: 'atual',
+  },
+  en: {
+    description: "eduardo borges' site — software engineer, from bahia, former vaqueiro.",
+    bioRole: 'building AI agents for legal tech.',
+    bioYears: '13+ years across fintech, banking, crypto and e-commerce, with time at',
+    bioAnd: 'and',
+    bioOss: 'I maintain open source projects with 100k+ weekly downloads.',
+    listening: 'listening to',
+    tracked: '· tracked by lastfm',
+    loading: 'beep boop loading...',
+    posts: 'blog posts (in portuguese)',
+    xp: 'experience',
+    present: 'present',
+  },
+}[lang];
+
+const posts = (await getCollection('posts'))
+  .filter(p => !p.data.draft && !p.data.hidden)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+const experience = [
+  { role: 'senior product engineer, genai', company: 'wealthcounsel', period: `2026 ~ ${t.present}` },
+  { role: 'staff software engineer', company: 'solfácil', period: '2024 ~ 2026' },
+  { role: 'principal engineer & cto', company: 'inhouse market', period: '2023 ~ 2024' },
+  { role: 'staff software engineer', company: 'stone', period: '2022 ~ 2023' },
+  { role: 'senior engineering manager', company: 'capitual', period: '2021 ~ 2022' },
+  { role: 'tech lead', company: 'americanas s.a.', period: '2020 ~ 2021' },
+  { role: 'senior software engineer', company: 'stone', period: '2019 ~ 2020' },
+  { role: 'founding engineer, mobile', company: 'capitual', period: '2018 ~ 2019' },
+  { role: 'software engineer', company: 'getinfo', period: '2016 ~ 2017' },
+  { role: 'fullstack engineer', company: 'freelance', period: '2013 ~ 2017' },
+];
+---
+
+<Base title="Eduardo" ogImage="/me.jpeg" description={t.description}>
+  <main>
+    <div class="hero">
+      <div class="hero-text">
+        <h1>{'Eduardo Borges'.split('').map((c, i) =>
+          c === ' ' ? ' ' : <span class="wave" style={`--i: ${i}`}>{c}</span>
+        )}</h1>
+        <p>
+          Senior Product Engineer (GenAI) <strong>@</strong> <a href="https://www.wealthcounsel.com" target="_blank" rel="noopener noreferrer">WealthCounsel</a>,
+          {t.bioRole}
+          {t.bioYears}
+          <a href="https://www.solfacil.com.br" target="_blank" rel="noopener noreferrer">Solfácil</a>,
+          <a href="https://www.stone.co" target="_blank" rel="noopener noreferrer">Stone</a> {t.bioAnd}
+          <a href="https://americanas.com.br" target="_blank" rel="noopener noreferrer">Americanas</a>.
+          {t.bioOss}
+        </p>
+        {lang === 'pt'
+          ? <p><strong>Brasileiro. Baiano. <a href="https://pt.wikipedia.org/wiki/Vaqueiro" target="_blank" rel="noopener noreferrer">Ex-vaqueiro</a></strong>.</p>
+          : <p><strong>Brazilian. From Bahia. Former <a href="https://en.wikipedia.org/wiki/Vaqueiro" target="_blank" rel="noopener noreferrer">vaqueiro</a></strong>.</p>
+        }
+
+        <div class="hero-links">
+          <a href="https://linkedin.com/in/euduardoborges" target="_blank" rel="noopener noreferrer">linkedin</a>
+          <a href="https://github.com/eduardoborges" target="_blank" rel="noopener noreferrer">github</a>
+        </div>
+      </div>
+      <AsciiPortrait />
+    </div>
+
+    <p class="now-playing">
+      {t.listening} <a href="" id="last-played">{t.loading}</a>
+      <small>{t.tracked}</small>
+    </p>
+
+    <h2>{t.posts}</h2>
+    <ul class="posts">
+      {posts.map(post => (
+        <li class="post">
+          <a href={`/posts/${post.data.slug || post.id}`}>{post.data.title}</a>
+          <time class="meta" datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        </li>
+      ))}
+    </ul>
+
+    <h2>{t.xp}</h2>
+    <ul class="xp">
+      {experience.map(x => (
+        <li>
+          <span class="xp-role">{x.role} <strong>@</strong> {x.company}</span>
+          <span class="meta">{x.period}</span>
+        </li>
+      ))}
+    </ul>
+  </main>
+
+  <script>
+    const el = document.getElementById("last-played") as HTMLAnchorElement;
+    (async () => {
+      try {
+        const data = await fetch("https://tools.borges.workers.dev/recent-tracks").then(r => r.json());
+        const track = data.recenttracks.track[0];
+        el.innerText = `${String(track.name).toLowerCase()} - ${String(track.artist["#text"]).toLowerCase()}`;
+        el.href = String(track.url);
+      } catch {
+        el.innerText = "[oops 😔... something went wrong]";
+      }
+    })();
+  </script>
+</Base>

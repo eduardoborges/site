@@ -132,6 +132,22 @@ header nav a.active {
   background: var(--bg);
 }
 
+.lang {
+  color: var(--border);
+  font-size: .9rem;
+  margin-left: 8px;
+}
+
+.lang a {
+  padding: 6px 4px;
+  color: var(--muted);
+}
+
+.lang a.active {
+  color: var(--accent);
+  background: none;
+}
+
 /* Main */
 
 main {

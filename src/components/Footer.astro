@@ -1,9 +1,14 @@
 ---
 const year = new Date().getFullYear();
+const { pathname } = Astro.url;
+const isEn = pathname === '/en' || pathname.startsWith('/en/');
 ---
 
 <footer>
   <div class="footer-info">
-    {year} · feito com <a href="https://astro.build" target="_blank" rel="noopener noreferrer">astro</a> & hospedado por <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">cloudflare pages</a>
+    {isEn
+      ? <>{year} · built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">astro</a> & hosted on <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">cloudflare pages</a></>
+      : <>{year} · feito com <a href="https://astro.build" target="_blank" rel="noopener noreferrer">astro</a> & hospedado por <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">cloudflare pages</a></>
+    }
   </div>
 </footer>
