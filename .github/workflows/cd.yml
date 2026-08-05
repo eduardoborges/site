@@ -25,8 +25,6 @@ jobs:
         run: pnpm build
 
       - name: Deploy to CloudFlare
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CF_TOKEN }}
-          command: |
-            pages deploy ./dist --project-name=site --branch=main
+        run: pnpm exec wrangler pages deploy ./dist --project-name=site --branch=main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_TOKEN }}
