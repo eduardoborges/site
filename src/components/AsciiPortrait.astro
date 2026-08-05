@@ -65,6 +65,16 @@ import art from './ascii-portrait.html?raw';
       throw new Error('ascii-portrait: foto não carregou');
     }
 
+    // borda da silhueta do png esfumada pra dentro: alpha da versão borrada
+    // multiplica a nítida (source-in), então o recorte duro vira um fade
+    const soft = layer();
+    const sctx = soft.getContext('2d')!;
+    sctx.filter = `blur(${6 * dpr}px)`;
+    sctx.drawImage(img, 0, 0, W, H);
+    sctx.filter = 'none';
+    sctx.globalCompositeOperation = 'source-in';
+    sctx.drawImage(img, 0, 0, W, H);
+
     const comp = layer();   // foto recortada pelo círculo do cursor
     const cctx = comp.getContext('2d')!;
 
@@ -92,7 +102,7 @@ import art from './ascii-portrait.html?raw';
         cctx.fillStyle = g;
         cctx.fillRect(x - r, y - r, r * 2, r * 2);
         cctx.globalCompositeOperation = 'source-in';
-        cctx.drawImage(img, 0, 0, W, H);
+        cctx.drawImage(soft, 0, 0, W, H);
         ctx.drawImage(comp, 0, 0, rect.width, rect.height);
       }
     };
