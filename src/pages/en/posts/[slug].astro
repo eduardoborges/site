@@ -1,11 +1,11 @@
 ---
-import Base from "../../layouts/Base.astro";
+import Base from "../../../layouts/Base.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-  const posts = (
-    await getCollection("posts", (p) => p.data.lang !== "en")
-  ).filter((p) => import.meta.env.DEV || !p.data.draft);
+  const posts = (await getCollection("posts", p => p.data.lang === "en")).filter(
+    (p) => import.meta.env.DEV || !p.data.draft,
+  );
   return posts.map((post) => ({
     params: { slug: post.data.slug || post.id },
     props: { post },
@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const slug = post.data.slug || post.id;
-const permalink = `https://eduardoborges.dev/posts/${slug}`;
+const permalink = `https://eduardoborges.dev/en/posts/${slug}`;
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString("en-US", {
@@ -53,13 +53,13 @@ const jsonLd = JSON.stringify({
       <div class="title">
         <h1>{post.data.title}</h1>
         <div class="meta">
-          postado em <time datetime={post.data.date.toISOString()}
+          posted on <time datetime={post.data.date.toISOString()}
             >{formatDate(post.data.date)}</time
           >
-          {post.data.draft && <span class="draft-label">rascunho</span>}
+          {post.data.draft && <span class="draft-label">draft</span>}
         </div>
         <small>
-          compartilhe no
+          share on
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${permalink}`}
             target="_blank"
@@ -83,7 +83,7 @@ const jsonLd = JSON.stringify({
       {
         post.data.tags && post.data.tags.length > 0 && (
           <div class="post-tags">
-            <nav aria-label="tags do post">
+            <nav aria-label="post tags">
               <ul class="tags">
                 {post.data.tags.map((tag) => (
                   <li>

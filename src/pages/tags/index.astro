@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('posts')).filter(p => !p.data.draft);
+const posts = (await getCollection('posts', p => p.data.lang !== 'en')).filter(p => !p.data.draft);
 const tagCount = new Map<string, number>();
 
 for (const post of posts) {

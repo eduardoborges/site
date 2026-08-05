@@ -32,13 +32,15 @@ const t = {
     listening: 'listening to',
     tracked: '· tracked by lastfm',
     loading: 'beep boop loading...',
-    posts: 'blog posts (in portuguese)',
+    posts: 'blog posts',
     xp: 'experience',
     present: 'present',
   },
 }[lang];
 
-const posts = (await getCollection('posts'))
+const posts = (
+  await getCollection('posts', p => lang === 'en' ? p.data.lang === 'en' : p.data.lang !== 'en')
+)
   .filter(p => !p.data.draft && !p.data.hidden)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
@@ -97,7 +99,7 @@ const experience = [
     <ul class="posts">
       {posts.map(post => (
         <li class="post">
-          <a href={`/posts/${post.data.slug || post.id}`}>{post.data.title}</a>
+          <a href={`${lang === 'en' ? '/en' : ''}/posts/${post.data.slug || post.id}`}>{post.data.title}</a>
           <time class="meta" datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
         </li>
       ))}

@@ -1,8 +1,8 @@
 ---
-import Base from '../../layouts/Base.astro';
+import Base from '../../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('posts', p => p.data.lang !== 'en'))
+const posts = (await getCollection('posts', p => p.data.lang === 'en'))
   .filter(p => !p.data.draft && !p.data.hidden)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
@@ -10,15 +10,15 @@ const formatDate = (date: Date) =>
   date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 ---
 
-<Base title="lista de postagens" description="todas as postagens do blog do eduardo borges.">
+<Base title="post list" description="all of eduardo borges' blog posts.">
   <main>
-    <h1 class="page-title">lista de postagens</h1>
+    <h1 class="page-title">post list</h1>
 
     {posts.map(post => {
       const slug = post.data.slug || post.id;
       return (
         <section class="list-item">
-          <h2><a href={`/posts/${slug}`}>{post.data.title}</a></h2>
+          <h2><a href={`/en/posts/${slug}`}>{post.data.title}</a></h2>
           <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
           <div class="description">{post.data.description || post.body?.slice(0, 200) + '…'}</div>
         </section>
