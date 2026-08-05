@@ -3,7 +3,7 @@
   --bg: #131210;
   --surface: #1a1917;
   --border: #2c2a25;
-  --muted: #7d7869;
+  --muted: #878272;
   --subtle: #a8a291;
   --text: #c6c0af;
   --heading: #efe9d8;
@@ -188,6 +188,8 @@ main {
 @media (prefers-reduced-motion: reduce) {
   .hero h1 .wave { animation: none; }
 }
+
+.wght-char { transition: font-variation-settings .12s ease-out; }
 
 .hero p {
   font-size: .95rem;

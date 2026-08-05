@@ -74,6 +74,60 @@ const defaultDescription = isEn
     <Footer />
   </div>
 
+  <script>
+    // wght-hover: mesmo efeito de peso do título, mas guiado pelo cursor —
+    // letras perto do mouse engordam e decaem com a distância.
+    // fallback: sem hover (touch) ou reduced-motion, nada muda.
+    if (
+      matchMedia('(hover: hover)').matches &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      const R = 60;
+      const MAX = 800;
+      for (const el of document.querySelectorAll<HTMLElement>('h1, h2, h3, a')) {
+        if (el.matches('.hero h1')) continue; // o título já tem a onda própria
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        const nodes: Text[] = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+        const chars: HTMLSpanElement[] = [];
+        for (const node of nodes) {
+          const frag = document.createDocumentFragment();
+          for (const ch of node.textContent ?? '') {
+            if (!ch.trim()) {
+              frag.append(ch);
+              continue;
+            }
+            const s = document.createElement('span');
+            s.className = 'wght-char';
+            s.textContent = ch;
+            frag.append(s);
+            chars.push(s);
+          }
+          node.replaceWith(frag);
+        }
+        if (!chars.length) continue;
+        const base = parseInt(getComputedStyle(el).fontWeight) || 400;
+        el.addEventListener('pointermove', (e) => {
+          for (const s of chars) {
+            const r = s.getBoundingClientRect();
+            const d = Math.hypot(
+              e.clientX - r.left - r.width / 2,
+              e.clientY - r.top - r.height / 2,
+            );
+            // sqrt: platô pesado perto do cursor, queda brusca na borda do raio
+            const t = Math.sqrt(Math.max(0, 1 - d / R));
+            // no hover o elemento inteiro afina pra 100 e só a zona do cursor
+            // engorda até 800 — mesma amplitude da onda do título
+            s.style.fontVariationSettings = `'wght' ${Math.round(100 + (MAX - 100) * t)}`;
+          }
+        });
+        el.addEventListener('pointerleave', () => {
+          for (const s of chars) s.style.fontVariationSettings = `'wght' ${base}`;
+        });
+      }
+    }
+  </script>
+
   <!-- gtag deferred -->
   <script is:inline>
     window.addEventListener('load', function() {

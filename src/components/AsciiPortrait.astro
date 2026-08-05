@@ -86,7 +86,7 @@ import art from './ascii-portrait.html?raw';
         const [x, y, r] = [mx * dpr, my * dpr, R * dpr];
         cctx.globalCompositeOperation = 'source-over';
         cctx.clearRect(0, 0, W, H);
-        const g = cctx.createRadialGradient(x, y, r * 0.7, x, y, r);
+        const g = cctx.createRadialGradient(x, y, 0, x, y, r);
         g.addColorStop(0, 'rgba(255,255,255,1)');
         g.addColorStop(1, 'rgba(255,255,255,0)');
         cctx.fillStyle = g;
