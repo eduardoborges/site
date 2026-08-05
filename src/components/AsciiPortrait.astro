@@ -1,0 +1,108 @@
+---
+// gerado por scripts/ascii-portrait.mjs a partir de public/me-withoutbg.png
+import art from './ascii-portrait.html?raw';
+---
+
+<pre class="ascii-portrait" aria-hidden="true" set:html={art}></pre>
+
+<script>
+  // scratch-reveal: o ascii fica por cima; onde o cursor passa, a foto real
+  // aparece (máscara com rastro que decai de volta pro ascii).
+  // fallback: sem js / reduced-motion, fica o <pre> estático.
+  const pre = document.querySelector<HTMLPreElement>('.ascii-portrait');
+  if (pre && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    await document.fonts.ready; // métricas do <pre> mudam quando a webfont carrega
+
+    const grid: { ch: string; red: boolean }[][] = [[]];
+    for (const node of pre.childNodes) {
+      const red = node instanceof HTMLElement;
+      for (const ch of node.textContent ?? '') {
+        if (ch === '\n') grid.push([]);
+        else grid[grid.length - 1].push({ ch, red });
+      }
+    }
+
+    const rect = pre.getBoundingClientRect();
+    const rows = grid.length;
+    const cols = Math.max(...grid.map(l => l.length));
+    const cellH = rect.height / rows;
+    const cellW = rect.width / cols;
+    const dpr = Math.min(devicePixelRatio, 2);
+    const W = Math.round(rect.width * dpr);
+    const H = Math.round(rect.height * dpr);
+
+    const layer = () => {
+      const c = document.createElement('canvas');
+      c.width = W;
+      c.height = H;
+      return c;
+    };
+
+    // camada ascii, renderizada uma vez
+    const css = getComputedStyle(document.documentElement);
+    const ascii = layer();
+    const actx = ascii.getContext('2d')!;
+    actx.scale(dpr, dpr);
+    actx.font = `${cellH / 1.2}px 'JetBrains Mono Variable', ui-monospace, Menlo, monospace`;
+    actx.textBaseline = 'top';
+    const base = css.getPropertyValue('--muted').trim();
+    const accent = css.getPropertyValue('--accent').trim();
+    grid.forEach((line, row) =>
+      line.forEach(({ ch, red }, col) => {
+        if (ch === ' ') return;
+        actx.fillStyle = red ? accent : base;
+        actx.fillText(ch, col * cellW, row * cellH);
+      })
+    );
+
+    const img = new Image();
+    img.src = '/me-withoutbg.png';
+    try {
+      await img.decode();
+    } catch {
+      pre.replaceWith(ascii); // sem foto, fica o ascii estático em canvas
+      ascii.className = 'ascii-canvas';
+      throw new Error('ascii-portrait: foto não carregou');
+    }
+
+    const comp = layer();   // foto recortada pelo círculo do cursor
+    const cctx = comp.getContext('2d')!;
+
+    const canvas = layer();
+    canvas.className = 'ascii-canvas';
+    canvas.style.width = `${rect.width}px`;
+    canvas.style.height = `${rect.height}px`;
+    pre.replaceWith(canvas);
+    const ctx = canvas.getContext('2d')!;
+    ctx.scale(dpr, dpr);
+
+    const R = 55;
+
+    const draw = (mx: number, my: number) => {
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      ctx.drawImage(ascii, 0, 0, rect.width, rect.height);
+      if (mx > -1e4) {
+        // círculo com borda suave na posição atual, foto recortada dentro
+        const [x, y, r] = [mx * dpr, my * dpr, R * dpr];
+        cctx.globalCompositeOperation = 'source-over';
+        cctx.clearRect(0, 0, W, H);
+        const g = cctx.createRadialGradient(x, y, r * 0.7, x, y, r);
+        g.addColorStop(0, 'rgba(255,255,255,1)');
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        cctx.fillStyle = g;
+        cctx.fillRect(x - r, y - r, r * 2, r * 2);
+        cctx.globalCompositeOperation = 'source-in';
+        cctx.drawImage(img, 0, 0, W, H);
+        ctx.drawImage(comp, 0, 0, rect.width, rect.height);
+      }
+    };
+
+    canvas.addEventListener('pointermove', e => {
+      const r = canvas.getBoundingClientRect();
+      draw(e.clientX - r.left, e.clientY - r.top);
+    });
+    canvas.addEventListener('pointerleave', () => draw(-1e4, -1e4));
+
+    draw(-1e4, -1e4); // primeiro paint
+  }
+</script>
