@@ -6,8 +6,8 @@ import art from './ascii-portrait.html?raw';
 <pre class="ascii-portrait" aria-hidden="true" set:html={art}></pre>
 
 <script>
-  // scratch-reveal: o ascii fica por cima; onde o cursor passa, a foto real
-  // aparece (máscara com rastro que decai de volta pro ascii).
+  // scratch-reveal: o ascii fica por cima; perto do cursor os caracteres
+  // somem célula a célula e a foto real aparece só nesses buracos.
   // fallback: sem js / reduced-motion, fica o <pre> estático.
   const pre = document.querySelector<HTMLPreElement>('.ascii-portrait');
   if (pre && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -75,9 +75,6 @@ import art from './ascii-portrait.html?raw';
     sctx.globalCompositeOperation = 'source-in';
     sctx.drawImage(img, 0, 0, W, H);
 
-    const comp = layer();   // foto recortada pelo círculo do cursor
-    const cctx = comp.getContext('2d')!;
-
     const canvas = layer();
     canvas.className = 'ascii-canvas';
     canvas.style.width = `${rect.width}px`;
@@ -86,24 +83,27 @@ import art from './ascii-portrait.html?raw';
     const ctx = canvas.getContext('2d')!;
     ctx.scale(dpr, dpr);
 
-    const R = 55;
+    const R = 45;
 
     const draw = (mx: number, my: number) => {
       ctx.clearRect(0, 0, rect.width, rect.height);
       ctx.drawImage(ascii, 0, 0, rect.width, rect.height);
       if (mx > -1e4) {
-        // círculo com borda suave na posição atual, foto recortada dentro
-        const [x, y, r] = [mx * dpr, my * dpr, R * dpr];
-        cctx.globalCompositeOperation = 'source-over';
-        cctx.clearRect(0, 0, W, H);
-        const g = cctx.createRadialGradient(x, y, 0, x, y, r);
-        g.addColorStop(0, 'rgba(255,255,255,1)');
-        g.addColorStop(1, 'rgba(255,255,255,0)');
-        cctx.fillStyle = g;
-        cctx.fillRect(x - r, y - r, r * 2, r * 2);
-        cctx.globalCompositeOperation = 'source-in';
-        cctx.drawImage(soft, 0, 0, W, H);
-        ctx.drawImage(comp, 0, 0, rect.width, rect.height);
+        // célula com centro dentro do raio some inteira; a foto só é
+        // desenhada nesses retângulos (reveal quantizado no grid)
+        ctx.save();
+        ctx.beginPath();
+        for (let row = 0; row < rows; row++)
+          for (let col = 0; col < cols; col++) {
+            const dx = (col + 0.5) * cellW - mx;
+            const dy = (row + 0.5) * cellH - my;
+            if (dx * dx + dy * dy < R * R)
+              ctx.rect(col * cellW, row * cellH, cellW, cellH);
+          }
+        ctx.clip();
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        ctx.drawImage(soft, 0, 0, rect.width, rect.height);
+        ctx.restore();
       }
     };
 
