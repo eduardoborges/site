@@ -48,7 +48,7 @@ const formatDate = (date: Date) =>
   date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
 const experience = [
-  { role: 'senior product engineer, genai', company: 'wealthcounsel', period: `2026 ~ ${t.present}` },
+  { role: 'senior product engineer', company: 'wealthcounsel', period: `2026 ~ ${t.present}` },
   { role: 'staff software engineer', company: 'solfácil', period: '2024 ~ 2026' },
   { role: 'principal engineer & cto', company: 'inhouse market', period: '2023 ~ 2024' },
   { role: 'staff software engineer', company: 'stone', period: '2022 ~ 2023' },
@@ -69,7 +69,7 @@ const experience = [
           c === ' ' ? ' ' : <span class="wave" style={`--i: ${i}`}>{c}</span>
         )}</h1>
         <p>
-          Senior Product Engineer (GenAI) <strong>@</strong> <a href="https://www.wealthcounsel.com" target="_blank" rel="noopener noreferrer">WealthCounsel</a>,
+          Senior Product Engineer <strong>@</strong> <a href="https://www.wealthcounsel.com" target="_blank" rel="noopener noreferrer">WealthCounsel</a>,
           {t.bioRole}
           {t.bioYears}
           <a href="https://www.solfacil.com.br" target="_blank" rel="noopener noreferrer">Solfácil</a>,
