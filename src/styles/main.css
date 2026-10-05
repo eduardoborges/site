@@ -10,6 +10,21 @@
   --accent: #ff5a1f;
 }
 
+/* blocos de código ficam escuros nos dois temas (shiki css-variables) */
+:root {
+  --astro-code-background: #050505;
+  --astro-code-foreground: #cfcfcf;
+  --astro-code-token-comment: #8c8c8c;
+  --astro-code-token-punctuation: #8c8c8c;
+  --astro-code-token-parameter: #ababab;
+  --astro-code-token-function: #f2f2f2;
+  --astro-code-token-keyword: #7c9cff;
+  --astro-code-token-link: #7c9cff;
+  --astro-code-token-string: #6fdc8c;
+  --astro-code-token-string-expression: #6fdc8c;
+  --astro-code-token-constant: #ff7b7b;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -503,8 +518,8 @@ code {
 }
 
 pre {
-  background: #0f0e0c;
-  color: var(--text);
+  background: var(--astro-code-background);
+  color: var(--astro-code-foreground);
   border: 1px solid var(--border);
   line-height: 1.5;
   overflow-x: auto;
