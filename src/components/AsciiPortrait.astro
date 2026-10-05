@@ -1,16 +1,96 @@
 ---
 // gerado por scripts/ascii-portrait.mjs a partir de public/me-withoutbg.png
 import art from './ascii-portrait.html?raw';
+
+interface Props {
+  caption: string;
+  redraw: string;
+}
+
+const { caption, redraw } = Astro.props;
+
+const all = art.split('\n');
+const plain = all.map(l => l.replace(/<[^>]+>/g, ''));
+// linhas vazias do topo (área transparente do png) saem, pra cota abraçar o busto;
+// crop é a fração do png que elas ocupavam, pra foto do reveal continuar alinhada
+const top = plain.findIndex(l => l.trim());
+const crop = top / all.length;
+const lines = plain.slice(top);
+
+// medidas reais do <pre>: avanço 0.6em e linha 1.2em a 5.5px (ver .ascii-portrait)
+const cw = 5.5 * 0.6;
+const lh = 5.5 * 1.2;
+const indent = (l: string) => l.length - l.trimStart().length;
+const minIndent = Math.min(...lines.filter(l => l.trim()).map(indent));
+const cols = Math.max(...lines.map(l => l.length));
+const x0 = minIndent * cw;
+const w = cols * cw;
+const h = lines.length * lh;
+// linhas de chamada saem dos pontos extremos do busto e do topo da cabeça
+const leftY = lines.findIndex(l => l.trim() && indent(l) === minIndent) * lh;
+const rightY = lines.findIndex(l => l.length === cols) * lh;
+const headX = lines[0].length * cw;
+const mid = (x0 + w) / 2;
 ---
 
-<pre class="ascii-portrait" aria-hidden="true" set:html={art}></pre>
+<figure class="fig fig-portrait">
+  <div class="portrait">
+    <pre class="ascii-portrait" aria-hidden="true" data-crop={crop} set:html={all.slice(top).join('\n')}></pre>
+    <svg viewBox={`0 0 ${w} ${h}`} aria-hidden="true">
+      <defs>
+        <marker id="arw-p" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto" markerUnits="userSpaceOnUse">
+          <path class="arrow" d="M0 1L8 4L0 7z" />
+        </marker>
+        <pattern id="hatch-p" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <line class="hatch" x1="0" y1="0" x2="0" y2="5" />
+        </pattern>
+      </defs>
+
+      <!-- chão hachurado, a mesa de onde a impressão sobe -->
+      <g class="ground">
+        <path class="ink draw" pathLength="1" d={`M-14 ${h}H${w + 14}`} />
+        <rect class="fade" x="-14" y={h} width={w + 28} height="7" fill="url(#hatch-p)" />
+      </g>
+
+      <g class="dims">
+        <path class="dim" d={`M${x0} ${leftY - 4}V-26M${w} ${rightY - 4}V-26M${headX + 4} 0H${w + 26}M${w + 16} ${h}H${w + 26}`} />
+        <path class="dim draw" pathLength="1" d={`M${mid - 20} -18H${x0}`} marker-end="url(#arw-p)" />
+        <path class="dim draw" pathLength="1" d={`M${mid + 20} -18H${w}`} marker-end="url(#arw-p)" />
+        <text x={mid} y="-14" text-anchor="middle">{Math.round(w - x0)}</text>
+        <path class="dim draw" pathLength="1" style="--d:.15s" d={`M${w + 18} ${h / 2 - 20}V0`} marker-end="url(#arw-p)" />
+        <path class="dim draw" pathLength="1" style="--d:.15s" d={`M${w + 18} ${h / 2 + 20}V${h}`} marker-end="url(#arw-p)" />
+        <text transform={`translate(${w + 22} ${h / 2}) rotate(-90)`} text-anchor="middle">{Math.round(h)}</text>
+      </g>
+    </svg>
+  </div>
+  <script is:inline>
+    // com movimento liberado o retrato nasce escondido e o script abaixo o imprime
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
+      document.currentScript.previousElementSibling.classList.add('will-draw');
+  </script>
+  <figcaption>
+    {caption} <span>1:1</span>
+    <button type="button">{redraw}</button>
+  </figcaption>
+</figure>
 
 <script>
-  // scratch-reveal: o ascii fica por cima; perto do cursor os caracteres
-  // somem célula a célula e a foto real aparece só nesses buracos.
+  // o ascii vira canvas em três chapas, uma por canal de cor. uma "plotter"
+  // imprime de baixo pra cima; depois, perto do cursor, os caracteres somem
+  // célula a célula e a foto real aparece só nesses buracos.
   // fallback: sem js / reduced-motion, fica o <pre> estático.
-  const pre = document.querySelector<HTMLPreElement>('.ascii-portrait');
-  if (pre && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const portrait = document.querySelector<HTMLElement>('.portrait.will-draw');
+  const pre = portrait?.querySelector<HTMLPreElement>('.ascii-portrait');
+  if (portrait && pre) {
+    try {
+      await plot(portrait, pre);
+    } catch (err) {
+      portrait.classList.remove('will-draw'); // volta o <pre> estático
+      throw err;
+    }
+  }
+
+  async function plot(portrait: HTMLElement, pre: HTMLPreElement) {
     await document.fonts.ready; // métricas do <pre> mudam quando a webfont carrega
 
     const grid: { ch: string; red: boolean }[][] = [[]];
@@ -38,42 +118,38 @@ import art from './ascii-portrait.html?raw';
       return c;
     };
 
-    // camada ascii, renderizada uma vez
     const css = getComputedStyle(document.documentElement);
-    const ascii = layer();
-    const actx = ascii.getContext('2d')!;
-    actx.scale(dpr, dpr);
-    actx.font = `${cellH / 1.2}px 'JetBrains Mono Variable', ui-monospace, Menlo, monospace`;
-    actx.textBaseline = 'top';
-    const base = css.getPropertyValue('--muted').trim();
-    const accent = css.getPropertyValue('--ch1').trim();
-    grid.forEach((line, row) =>
-      line.forEach(({ ch, red }, col) => {
-        if (ch === ' ') return;
-        actx.fillStyle = red ? accent : base;
-        actx.fillText(ch, col * cellW, row * cellH);
-      })
-    );
+    const prop = (v: string) => css.getPropertyValue(v).trim();
+    const blend = prop('--blend') as GlobalCompositeOperation;
+    const inks = ['--ch1', '--ch2', '--ch3'].map(prop);
+    const muted = prop('--muted');
 
-    const img = new Image();
-    img.src = '/me-withoutbg.png';
-    try {
-      await img.decode();
-    } catch {
-      pre.replaceWith(ascii); // sem foto, fica o ascii estático em canvas
-      ascii.className = 'ascii-canvas';
-      throw new Error('ascii-portrait: foto não carregou');
-    }
-
-    // borda da silhueta do png esfumada pra dentro: alpha da versão borrada
-    // multiplica a nítida (source-in), então o recorte duro vira um fade
-    const soft = layer();
-    const sctx = soft.getContext('2d')!;
-    sctx.filter = `blur(${6 * dpr}px)`;
-    sctx.drawImage(img, 0, 0, W, H);
-    sctx.filter = 'none';
-    sctx.globalCompositeOperation = 'source-in';
-    sctx.drawImage(img, 0, 0, W, H);
+    // uma chapa por canal: alinhadas, screen (escuro) ou multiply (claro)
+    // somam de volta a cor original
+    const paper = blend === 'multiply' ? 255 : 0;
+    const plates = [0, 1, 2].map(i => {
+      const plate = layer();
+      const pctx = plate.getContext('2d')!;
+      pctx.scale(dpr, dpr);
+      pctx.font = `${cellH / 1.2}px 'JetBrains Mono Variable', ui-monospace, Menlo, monospace`;
+      pctx.textBaseline = 'top';
+      const channel = (color: string) => {
+        pctx.fillStyle = color; // o canvas normaliza pra #rrggbb
+        const rgb = [paper, paper, paper];
+        rgb[i] = parseInt(String(pctx.fillStyle).slice(1 + i * 2, 3 + i * 2), 16);
+        return `rgb(${rgb})`;
+      };
+      const base = channel(muted);
+      const red = channel(inks[0]);
+      grid.forEach((line, row) =>
+        line.forEach((cell, col) => {
+          if (cell.ch === ' ') return;
+          pctx.fillStyle = cell.red ? red : base;
+          pctx.fillText(cell.ch, col * cellW, row * cellH);
+        })
+      );
+      return plate;
+    });
 
     const canvas = layer();
     canvas.className = 'ascii-canvas';
@@ -83,36 +159,134 @@ import art from './ascii-portrait.html?raw';
     const ctx = canvas.getContext('2d')!;
     ctx.scale(dpr, dpr);
 
-    const R = 45;
+    // foto do reveal carrega em paralelo; sem ela a lente só não abre.
+    // borda da silhueta esfumada pra dentro: alpha da versão borrada
+    // multiplica a nítida (source-in), então o recorte duro vira um fade
+    let soft: HTMLCanvasElement | null = null;
+    const img = new Image();
+    img.src = '/me-withoutbg.png';
+    img.decode().then(() => {
+      const sy = img.naturalHeight * Number(pre.dataset.crop ?? 0);
+      const sh = img.naturalHeight - sy;
+      const s = layer();
+      const sctx = s.getContext('2d')!;
+      sctx.filter = `blur(${6 * dpr}px)`;
+      sctx.drawImage(img, 0, sy, img.naturalWidth, sh, 0, 0, W, H);
+      sctx.filter = 'none';
+      sctx.globalCompositeOperation = 'source-in';
+      sctx.drawImage(img, 0, sy, img.naturalWidth, sh, 0, 0, W, H);
+      soft = s;
+    }, () => {});
 
-    const draw = (mx: number, my: number) => {
+    // impressão: a cabeça sobe do chão ao topo e cada canal sai do bico com
+    // atraso (ch1 × 1.16, ch2, ch3 × 0.84). em velocidade os bicos se separam
+    // e a frente impressa passa pelas cores; parados, somam branco
+    const PRINT = 1500;
+    const LAG = [1.16, 1, 0.84].map(k => k * 220);
+    const ease = (t: number) => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2);
+    const head = (ms: number) => rect.height * (1 - ease(Math.min(1, Math.max(0, ms / PRINT))));
+    let start = performance.now();
+
+    // lente: mesma física, cada anel persegue o cursor com seu atraso
+    const R = 45;
+    const OFF = -1e4;
+    const rings = inks.map((color, i) => ({ color, k: [0.2, 0.26, 0.32][i], x: OFF, y: OFF }));
+    let mx = OFF;
+    let my = OFF;
+    let raf = 0;
+
+    const frame = (now: number) => {
+      raf = 0;
+      const ms = now - start;
+      const printing = ms < PRINT + LAG[0];
       ctx.clearRect(0, 0, rect.width, rect.height);
-      ctx.drawImage(ascii, 0, 0, rect.width, rect.height);
-      if (mx > -1e4) {
-        // célula com centro dentro do raio some inteira; a foto só é
-        // desenhada nesses retângulos (reveal quantizado no grid)
+
+      ctx.save();
+      ctx.globalCompositeOperation = blend;
+      plates.forEach((plate, i) => {
+        const y = printing ? head(ms - LAG[i]) : 0;
+        if (y < rect.height)
+          ctx.drawImage(plate, 0, y * dpr, W, H - y * dpr, 0, y, rect.width, rect.height - y);
+      });
+      if (printing) {
+        inks.forEach((ink, i) => {
+          const y = Math.round(head(ms - LAG[i])) + 0.5;
+          ctx.strokeStyle = ink;
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(rect.width, y);
+          ctx.stroke();
+        });
+      }
+      ctx.restore();
+
+      let moving = false;
+      if (!printing && mx !== OFF) {
+        if (soft) {
+          // célula com centro dentro do raio some inteira; a foto só é
+          // desenhada nesses retângulos (reveal quantizado no grid)
+          ctx.save();
+          ctx.beginPath();
+          for (let row = 0; row < rows; row++)
+            for (let col = 0; col < cols; col++) {
+              const dx = (col + 0.5) * cellW - mx;
+              const dy = (row + 0.5) * cellH - my;
+              if (dx * dx + dy * dy < R * R)
+                ctx.rect(col * cellW, row * cellH, cellW, cellH);
+            }
+          ctx.clip();
+          ctx.clearRect(0, 0, rect.width, rect.height);
+          ctx.drawImage(soft, 0, 0, rect.width, rect.height);
+          ctx.restore();
+        }
+
         ctx.save();
-        ctx.beginPath();
-        for (let row = 0; row < rows; row++)
-          for (let col = 0; col < cols; col++) {
-            const dx = (col + 0.5) * cellW - mx;
-            const dy = (row + 0.5) * cellH - my;
-            if (dx * dx + dy * dy < R * R)
-              ctx.rect(col * cellW, row * cellH, cellW, cellH);
-          }
-        ctx.clip();
-        ctx.clearRect(0, 0, rect.width, rect.height);
-        ctx.drawImage(soft, 0, 0, rect.width, rect.height);
+        ctx.globalCompositeOperation = blend;
+        for (const ring of rings) {
+          ring.x += (mx - ring.x) * ring.k;
+          ring.y += (my - ring.y) * ring.k;
+          if (Math.abs(mx - ring.x) + Math.abs(my - ring.y) > 0.3) moving = true;
+          ctx.strokeStyle = ring.color;
+          ctx.beginPath();
+          ctx.arc(ring.x, ring.y, R, 0, Math.PI * 2);
+          ctx.stroke();
+        }
         ctx.restore();
       }
+
+      if (!printing) portrait.classList.add('is-on'); // libera as cotas
+      if (printing || moving) raf = requestAnimationFrame(frame);
+    };
+    const paint = () => {
+      if (!raf) raf = requestAnimationFrame(frame);
     };
 
-    canvas.addEventListener('pointermove', e => {
+    const aim = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect();
-      draw(e.clientX - r.left, e.clientY - r.top);
+      mx = e.clientX - r.left;
+      my = e.clientY - r.top;
+      paint();
+    };
+    canvas.addEventListener('pointerenter', e => {
+      aim(e);
+      for (const ring of rings) Object.assign(ring, { x: mx, y: my });
     });
-    canvas.addEventListener('pointerleave', () => draw(-1e4, -1e4));
+    canvas.addEventListener('pointermove', aim);
+    canvas.addEventListener('pointerleave', () => {
+      mx = my = OFF;
+      paint();
+    });
 
-    draw(-1e4, -1e4); // primeiro paint
+    const replay = portrait.parentElement?.querySelector('button');
+    if (replay) {
+      replay.style.visibility = 'visible';
+      replay.addEventListener('click', () => {
+        portrait.classList.remove('is-on');
+        start = performance.now();
+        paint();
+      });
+    }
+
+    paint();
   }
 </script>

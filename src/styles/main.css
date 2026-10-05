@@ -353,7 +353,87 @@ main > :last-child {
   color: var(--surface);
 }
 
+/* Figura (desenho técnico) */
+
+.fig {
+  margin: 0;
+}
+
+.fig figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: 14px;
+  font-size: .7rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--heading);
+}
+
+.fig figcaption span {
+  color: var(--muted);
+}
+
+/* o botão ocupa espaço desde o load (sem layout shift) e o script só o mostra */
+.fig figcaption button {
+  visibility: hidden;
+  margin-left: auto;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--heading);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 3px 9px;
+  cursor: pointer;
+}
+
+.fig figcaption button:hover {
+  background: var(--heading);
+  color: var(--surface);
+}
+
+.fig svg {
+  overflow: visible;
+}
+
+.fig .ink { fill: none; stroke: var(--heading); stroke-width: 1; }
+.fig .dim { fill: none; stroke: var(--muted); stroke-width: .75; }
+.fig .arrow { fill: var(--muted); }
+.fig .hatch { stroke: var(--muted); stroke-width: .75; }
+.fig text { fill: var(--muted); font-size: 11px; font-family: inherit; text-transform: none; }
+
+.fig .draw {
+  stroke-dasharray: 1;
+}
+
+/* o chão se desenha no load; as cotas só quando a impressão termina (.is-on) */
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes fade { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ground .draw { animation: draw .6s cubic-bezier(.5, 0, .2, 1) both; }
+  .ground .fade { animation: fade .4s .3s ease-out both; }
+  .portrait.will-draw .ascii-portrait { visibility: hidden; }
+  .portrait.will-draw:not(.is-on) .dims { opacity: 0; }
+  .portrait.will-draw:not(.is-on) .dims .draw { stroke-dashoffset: 1; }
+  .portrait.is-on .dims { animation: fade .4s ease-out both; }
+  .portrait.is-on .dims .draw { animation: draw .8s var(--d, 0s) cubic-bezier(.5, 0, .2, 1) both; }
+}
+
 /* ASCII portrait */
+
+.portrait {
+  position: relative;
+}
+
+.portrait > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 
 .ascii-portrait {
   font-family: inherit;
@@ -958,8 +1038,7 @@ footer {
     align-items: start;
   }
 
-  .hero .ascii-portrait,
-  .hero .ascii-canvas {
+  .hero .fig-portrait {
     order: -1;
     justify-self: center;
   }
