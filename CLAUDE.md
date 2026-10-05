@@ -38,14 +38,20 @@ Push na `main` dispara o deploy via GitHub Actions (`.github/workflows/cd.yml`) 
 ### Efeitos interativos (scripts inline, sem framework)
 
 - **wght-hover** (`Base.astro`): quebra o texto de `h1/h2/h3/a` em spans `.wght-char` e modula `font-variation-settings 'wght'` pela distância ao cursor (elemento afina pra 100, zona do cursor engorda até 800, raio 60px, falloff sqrt). O `h1` do hero fica de fora (tem a própria animação de onda). Fonte mono variável = peso não desloca layout.
-- **AsciiPortrait** (`src/components/AsciiPortrait.astro`): o `<pre>` ascii pré-gerado vira canvas no load; hover revela a foto real (`public/me-withoutbg.png`) num círculo difuso seguindo o cursor, com a borda da silhueta do PNG emplumada via blur + `source-in`. Fallback sem JS/reduced-motion: `<pre>` estático.
+- **AsciiPortrait** (`src/components/AsciiPortrait.astro`): figura com cotas reais (calculadas do ascii no frontmatter) e chão hachurado. No load o `<pre>` vira canvas em três chapas, uma por canal de cor; uma "plotter" imprime de baixo pra cima com os canais defasados (atraso × 1.16, × 1, × 0.84) e as cotas se desenham quando ela termina (`.is-on`). Hover revela a foto real (`public/me-withoutbg.png`) célula a célula, com a borda da lente em três anéis que seguem o cursor com atraso. As linhas vazias do topo do ascii são cortadas e o `data-crop` mantém a foto alinhada. Fallback sem JS/reduced-motion: `<pre>` estático com as cotas.
+
+### Prancha técnica
+
+- A coluna de 800px é a prancha: grid milimetrado (10px e 100px) com as linhas no fim de cada célula, então bordas de caixas com medida múltipla de 10px caem em cima delas. Zonas 1 a 8 no topo e no pé, title block no rodapé.
+- Cores: neutros mais três canais `--ch1..3`, só em linhas, nunca em texto. `--blend` é `screen` no escuro (RGB soma branco) e `multiply` no claro (CMY soma preto).
+- Código: shiki com tema `css-variables`, cores em `--astro-code-*` no `main.css`. **Pegadinha**: trocar o tema no dev exige apagar `.astro/data-store.json`, senão o HTML em cache continua com o tema antigo.
 
 ### Lighthouse 100 em tudo (manter)
 
-- Contraste: `--muted` em `src/styles/main.css` está calibrado pra ≥4.5:1 sobre `--surface`. Não escurecer.
+- Contraste: os tokens de texto em `src/styles/main.css` estão calibrados pra ≥4.5:1 sobre `--surface`, `--bg` e as linhas do grid, nos dois temas. Não escurecer `--muted`.
 - `aria-label` deve conter o texto visível do elemento (regra label-content-name-mismatch).
 
 ## Convenções
 
-- Todo o copy do site é lowercase estilizado.
+- Copy é lowercase estilizado. Exceção: rótulos de anotação (títulos de seção da home, cabeçalho da tabela, title block, legenda da figura) ficam em caixa alta, como numa prancha.
 - Commits sem atribuição a Claude/Anthropic.
