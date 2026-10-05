@@ -150,6 +150,29 @@ img {
   z-index: 101;
 }
 
+/* zonas 1 a 8 da prancha, 100px cada */
+.zones {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  height: 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  line-height: 19px;
+  color: var(--muted);
+  text-align: center;
+  user-select: none;
+}
+
+.zones span:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+
+.zones-bottom {
+  border-bottom: 0;
+  border-top: 1px solid var(--border);
+  line-height: 20px;
+}
+
 /* Header */
 
 header {
@@ -221,10 +244,13 @@ header nav a:hover {
   box-shadow: none;
 }
 
-/* Main */
+/* Main: o wrapper estica pro title block ficar no pé da prancha em página curta */
+
+#main-content {
+  flex: 1;
+}
 
 main {
-  flex: 1;
   padding: 40px;
 }
 
@@ -295,7 +321,8 @@ main > :last-child {
 .hero p a:hover,
 .now-playing a:hover,
 .body a:hover,
-.title small a:hover {
+.title small a:hover,
+.title-block a:hover {
   text-shadow: -1px 0 var(--ch1), 1px 0 var(--ch3);
 }
 
@@ -775,28 +802,57 @@ table th {
   color: var(--heading);
 }
 
-/* Footer */
+/* Footer: title block da prancha */
 
 footer {
-  padding: 24px 40px;
-  border-top: 1px dashed var(--border);
-  font-size: .85rem;
+  padding: 40px;
+  font-size: .8rem;
+  color: var(--text);
+}
+
+.title-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  width: fit-content;
+  margin-left: auto;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.title-block > * {
+  flex: 1 0 auto;
+  padding: 8px 14px;
+  background: var(--surface);
+}
+
+.title-block .k {
+  margin-right: 6px;
+  font-size: .9em;
+  letter-spacing: .06em;
+  text-transform: uppercase;
   color: var(--muted);
 }
 
-footer a {
-  color: var(--text);
+.title-block .id {
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--heading);
+}
+
+.title-block a {
   border-bottom: 1px solid var(--border);
 }
 
-footer a:hover {
-  color: var(--heading);
+.title-block a:hover {
   border-bottom-color: var(--heading);
 }
 
 /* Responsive */
 
 @media (max-width: 800px) {
+  .zones,
   .content::after {
     display: none;
   }
@@ -813,6 +869,10 @@ footer a:hover {
 
   footer {
     padding: 20px;
+  }
+
+  .title-block {
+    width: auto;
   }
 
   .title h1 {

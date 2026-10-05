@@ -24,6 +24,7 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname.replace(/\/$/, '
 const defaultDescription = isEn
   ? "eduardo borges' site — software engineer, from bahia, former vaqueiro."
   : 'site do eduardo borges — engenheiro de software, baiano, ex-vaqueiro.';
+const zones = [1, 2, 3, 4, 5, 6, 7, 8];
 ---
 
 <!DOCTYPE html>
@@ -67,11 +68,13 @@ const defaultDescription = isEn
 <body>
   <a href="#main-content" class="skip-link">pular para o conteúdo</a>
   <div class="content">
+    <div class="zones" aria-hidden="true">{zones.map(n => <span>{n}</span>)}</div>
     <Header />
     <div id="main-content">
       <slot />
     </div>
     <Footer />
+    <div class="zones zones-bottom" aria-hidden="true">{zones.map(n => <span>{n}</span>)}</div>
   </div>
 
   <script>

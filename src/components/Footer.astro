@@ -2,13 +2,17 @@
 const year = new Date().getFullYear();
 const { pathname } = Astro.url;
 const isEn = pathname === '/en' || pathname.startsWith('/en/');
+const t = isEn
+  ? { built: 'built with', hosted: 'hosted on', scale: 'scale' }
+  : { built: 'feito com', hosted: 'hospedado por', scale: 'escala' };
 ---
 
 <footer>
-  <div class="footer-info">
-    {isEn
-      ? <>{year} · built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">astro</a> & hosted on <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">cloudflare pages</a></>
-      : <>{year} · feito com <a href="https://astro.build" target="_blank" rel="noopener noreferrer">astro</a> & hospedado por <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">cloudflare pages</a></>
-    }
+  <div class="title-block">
+    <span class="id">eduardoborges.dev</span>
+    <span><span class="k">{t.built}</span><a href="https://astro.build" target="_blank" rel="noopener noreferrer">astro</a></span>
+    <span><span class="k">{t.hosted}</span><a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">cloudflare pages</a></span>
+    <span><span class="k">{t.scale}</span>1:1</span>
+    <span>{year}</span>
   </div>
 </footer>
