@@ -4,7 +4,7 @@ const isEn = pathname === '/en' || pathname.startsWith('/en/');
 ---
 
 <header>
-  <a href={isEn ? '/en/' : '/'} class="header-logo">eduardo<span>.</span></a>
+  <a href={isEn ? '/en/' : '/'} class="header-logo">eduardo<span class="dot">.</span></a>
   <nav aria-label={isEn ? 'main navigation' : 'navegação principal'}>
     <a href="/posts" class={pathname.startsWith('/posts') ? 'active' : ''}>blog</a>
     <a href="https://linkedin.com/in/euduardoborges" target="_blank" rel="noopener noreferrer">linkedin</a>

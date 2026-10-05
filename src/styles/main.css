@@ -1,13 +1,46 @@
 :root {
   color-scheme: dark;
-  --bg: #131210;
-  --surface: #1a1917;
-  --border: #2c2a25;
-  --muted: #878272;
-  --subtle: #a8a291;
-  --text: #c6c0af;
-  --heading: #efe9d8;
-  --accent: #ff5a1f;
+  --bg: #050505;
+  --surface: #0b0b0b;
+  --grid: rgba(255, 255, 255, .014);
+  --grid-major: rgba(255, 255, 255, .035);
+  --border: #2b2b2b;
+  --muted: #8c8c8c;
+  --subtle: #ababab;
+  --text: #cfcfcf;
+  --heading: #f2f2f2;
+  --header-bg: rgba(11, 11, 11, .85);
+  --danger: #ff5c5c;
+  --danger-bg: #ff5c5c1a;
+  /* canais cromáticos: só em linhas, nunca em texto. em screen os três somam branco */
+  --ch1: #ff4d4d;
+  --ch2: #3ddc5f;
+  --ch3: #4d7cff;
+  --blend: screen;
+}
+
+/* contrastes de texto validados ≥4.5:1 sobre surface, bg e linhas do grid */
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg: #e7e7e3;
+    --surface: #f6f6f3;
+    --grid: rgba(0, 0, 0, .018);
+    --grid-major: rgba(0, 0, 0, .045);
+    --border: #cfcfca;
+    --muted: #63635d;
+    --subtle: #4a4a45;
+    --text: #2a2a27;
+    --heading: #0d0d0c;
+    --header-bg: rgba(246, 246, 243, .85);
+    --danger: #c0101a;
+    --danger-bg: #c0101a1a;
+    /* no papel os canais viram tinta: magenta, amarelo e ciano multiplicam em preto */
+    --ch1: #e6007e;
+    --ch2: #e8b400;
+    --ch3: #00a0e3;
+    --blend: multiply;
+  }
 }
 
 /* blocos de código ficam escuros nos dois temas (shiki css-variables) */
@@ -37,8 +70,6 @@ body {
   font-family: 'JetBrains Mono Variable', ui-monospace, Menlo, Consolas, monospace;
   -webkit-font-smoothing: antialiased;
   background: var(--bg);
-  background-image: radial-gradient(var(--border) 1px, transparent 1px);
-  background-size: 22px 22px;
   color: var(--text);
   font-size: 15px;
   line-height: 1.6;
@@ -46,8 +77,8 @@ body {
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--heading);
+  color: var(--surface);
 }
 
 a {
@@ -90,16 +121,33 @@ img {
   color: var(--bg);
 }
 
-/* Layout */
+/* Prancha: papel milimetrado na coluna. as linhas ficam no fim de cada célula,
+   então caixas com medidas múltiplas de 10px fecham a borda em cima delas */
 
 .content {
+  position: relative;
   max-width: 800px;
   margin: 0 auto;
-  background: var(--surface);
-  border-inline: 1px solid var(--border);
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(90deg, transparent 99px, var(--grid-major) 0),
+    linear-gradient(transparent 99px, var(--grid-major) 0),
+    linear-gradient(90deg, transparent 9px, var(--grid) 0),
+    linear-gradient(transparent 9px, var(--grid) 0);
+  background-size: 100px 100px, 100px 100px, 10px 10px, 10px 10px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* moldura por cima de tudo, até do header sticky */
+.content::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-inline: 1px solid var(--border);
+  pointer-events: none;
+  z-index: 101;
 }
 
 /* Header */
@@ -108,12 +156,12 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 64px;
-  padding: 0 32px;
+  height: 60px;
+  padding: 0 40px;
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
-  background: rgba(26, 25, 23, .85);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   z-index: 100;
 }
@@ -124,27 +172,37 @@ header {
   letter-spacing: -.5px;
 }
 
-.header-logo span {
-  color: var(--accent);
+/* aberração cromática: o ponto fica sempre separado, o nome inteiro separa no hover */
+.header-logo .dot,
+.header-logo:hover {
+  text-shadow: -1.5px 0 var(--ch1), 1.5px 0 var(--ch3);
+}
+
+.header-logo:hover .dot {
+  text-shadow: -3px 0 var(--ch1), 3px 0 var(--ch3);
 }
 
 header nav {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 4px;
 }
 
 header nav a {
   font-weight: 500;
   color: var(--subtle);
   font-size: .9rem;
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 6px 10px;
 }
 
-header nav a:hover,
 header nav a.active {
   color: var(--heading);
-  background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+header nav a:hover {
+  color: var(--surface);
+  background: var(--heading);
 }
 
 .lang {
@@ -159,27 +217,32 @@ header nav a.active {
 }
 
 .lang a.active {
-  color: var(--accent);
-  background: none;
+  color: var(--heading);
+  box-shadow: none;
 }
 
 /* Main */
 
 main {
   flex: 1;
-  padding: 48px 32px;
+  padding: 40px;
+}
+
+main > :last-child {
+  margin-bottom: 0;
 }
 
 /* Hero */
 
 .hero {
-  padding: 40px 0;
-  border-bottom: 1px dashed var(--border);
-  margin-bottom: 40px;
+  padding: 30px 0 50px;
+  margin-bottom: 30px;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 32px;
+  gap: 40px;
   align-items: end;
+  /* linha de centro (traço e ponto) fechando o hero */
+  background: repeating-linear-gradient(90deg, var(--muted) 0 18px, transparent 0 22px, var(--muted) 0 24px, transparent 0 28px) bottom / 100% 1px no-repeat;
 }
 
 .hero h1 {
@@ -228,6 +291,14 @@ main {
   border-bottom-color: var(--heading);
 }
 
+/* links de texto: no hover os canais se separam */
+.hero p a:hover,
+.now-playing a:hover,
+.body a:hover,
+.title small a:hover {
+  text-shadow: -1px 0 var(--ch1), 1px 0 var(--ch3);
+}
+
 .hero-links {
   margin-top: 24px;
   display: flex;
@@ -246,13 +317,13 @@ main {
 .hero-links a::after { content: ']'; color: var(--muted); }
 
 .hero-links a:hover {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--heading);
+  color: var(--surface);
 }
 
 .hero-links a:hover::before,
 .hero-links a:hover::after {
-  color: var(--bg);
+  color: var(--surface);
 }
 
 /* ASCII portrait */
@@ -272,7 +343,7 @@ main {
 }
 
 .ascii-portrait .r {
-  color: var(--accent);
+  color: var(--ch1);
 }
 
 .ascii-canvas {
@@ -285,7 +356,7 @@ main {
 .now-playing {
   font-size: .9rem;
   color: var(--muted);
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
 
 .now-playing a {
@@ -479,7 +550,7 @@ li.post a:hover {
 }
 
 .body blockquote {
-  border-left: 3px solid var(--border);
+  border-left: 1px solid var(--muted);
   color: var(--subtle);
   margin: 1.5em 0;
   padding-left: 1em;
@@ -487,7 +558,8 @@ li.post a:hover {
 
 .body hr {
   border: 0;
-  border-top: 1px solid var(--border);
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--muted) 0 18px, transparent 0 22px, var(--muted) 0 24px, transparent 0 28px);
   margin: 2em 0;
 }
 
@@ -512,7 +584,6 @@ code {
   font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 4px;
   padding: .15em .35em;
   font-size: .9em;
 }
@@ -524,7 +595,6 @@ pre {
   line-height: 1.5;
   overflow-x: auto;
   padding: 1.25em;
-  border-radius: 6px;
   margin: 1.25em 0;
 }
 
@@ -546,7 +616,6 @@ pre code {
 .callout {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 6px;
   padding: 16px 20px;
   margin: 1.25em 0;
 }
@@ -596,16 +665,14 @@ pre code {
   display: inline-block;
   padding: 4px 12px;
   font-size: .85rem;
-  background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 4px;
   color: var(--text);
   font-weight: 500;
 }
 
 .tags a:hover {
   background: var(--heading);
-  color: var(--bg);
+  color: var(--surface);
   border-color: var(--heading);
 }
 
@@ -615,10 +682,9 @@ pre code {
   font-size: .75rem;
   font-weight: 600;
   text-transform: lowercase;
-  color: #fb2c36;
-  background: #fb2c361a;
+  color: var(--danger);
+  background: var(--danger-bg);
   padding: 2px 8px;
-  border-radius: 4px;
   margin-left: 8px;
 }
 
@@ -712,7 +778,7 @@ table th {
 /* Footer */
 
 footer {
-  padding: 24px 32px;
+  padding: 24px 40px;
   border-top: 1px dashed var(--border);
   font-size: .85rem;
   color: var(--muted);
@@ -730,17 +796,19 @@ footer a:hover {
 
 /* Responsive */
 
-@media (max-width: 600px) {
-  .content {
-    border-inline: none;
+@media (max-width: 800px) {
+  .content::after {
+    display: none;
   }
+}
 
+@media (max-width: 600px) {
   header {
     padding: 0 20px;
   }
 
   main {
-    padding: 32px 20px;
+    padding: 30px 20px 50px;
   }
 
   footer {
@@ -757,7 +825,7 @@ footer a:hover {
   }
 
   .hero {
-    padding: 32px 0;
+    padding: 20px 0 40px;
     grid-template-columns: 1fr;
     align-items: start;
   }

@@ -46,7 +46,7 @@ import art from './ascii-portrait.html?raw';
     actx.font = `${cellH / 1.2}px 'JetBrains Mono Variable', ui-monospace, Menlo, monospace`;
     actx.textBaseline = 'top';
     const base = css.getPropertyValue('--muted').trim();
-    const accent = css.getPropertyValue('--accent').trim();
+    const accent = css.getPropertyValue('--ch1').trim();
     grid.forEach((line, row) =>
       line.forEach(({ ch, red }, col) => {
         if (ch === ' ') return;
