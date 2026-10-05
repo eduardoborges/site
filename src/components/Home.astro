@@ -22,6 +22,7 @@ const t = {
     posts: 'postagens do blog',
     xp: 'experiência',
     present: 'atual',
+    cols: ['cargo', 'empresa', 'período'],
   },
   en: {
     description: "eduardo borges' site — software engineer, from bahia, former vaqueiro.",
@@ -35,6 +36,7 @@ const t = {
     posts: 'blog posts',
     xp: 'experience',
     present: 'present',
+    cols: ['role', 'company', 'period'],
   },
 }[lang];
 
@@ -59,6 +61,7 @@ const experience = [
   { role: 'software engineer', company: 'getinfo', period: '2016 ~ 2017' },
   { role: 'fullstack engineer', company: 'freelance', period: '2013 ~ 2017' },
 ];
+const firstYear = experience.at(-1)!.period.slice(0, 4);
 ---
 
 <Base title="Eduardo" ogImage="/me.jpeg" description={t.description}>
@@ -95,7 +98,7 @@ const experience = [
       <small>{t.tracked}</small>
     </p>
 
-    <h2>{t.posts}</h2>
+    <h2><span>{t.posts}</span><small>n = {posts.length}</small></h2>
     <ul class="posts">
       {posts.map(post => (
         <li class="post">
@@ -105,15 +108,21 @@ const experience = [
       ))}
     </ul>
 
-    <h2>{t.xp}</h2>
-    <ul class="xp">
-      {experience.map(x => (
-        <li>
-          <span class="xp-role">{x.role} <strong>@</strong> {x.company}</span>
-          <span class="meta">{x.period}</span>
-        </li>
-      ))}
-    </ul>
+    <h2><span>{t.xp}</span><small>{firstYear} ~ {t.present}</small></h2>
+    <table class="schedule">
+      <thead>
+        <tr>{t.cols.map(c => <th scope="col">{c}</th>)}</tr>
+      </thead>
+      <tbody>
+        {experience.map(x => (
+          <tr>
+            <td>{x.role}</td>
+            <td>{x.company}</td>
+            <td>{x.period}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </main>
 
   <script>

@@ -396,56 +396,114 @@ main > :last-child {
   border-bottom-color: var(--heading);
 }
 
-/* Section titles */
+/* Section titles: rótulo de prancha, caixa alta, com anotação à direita */
 
 main > h2 {
-  font-size: .8rem;
-  letter-spacing: .08em;
-  color: var(--muted);
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-/* Experiência */
-
-.posts {
-  margin-bottom: 48px;
-}
-
-.xp {
-  margin-bottom: 48px;
-}
-
-.xp li {
-  padding: 8px 0;
-  border-bottom: 1px dashed var(--border);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 16px;
-}
-
-.xp li:first-child {
-  border-top: 1px dashed var(--border);
-}
-
-.xp-role {
+  font-size: .75rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
   color: var(--heading);
+  font-weight: 500;
+  margin-bottom: 12px;
 }
 
-.xp-role strong {
+main > h2 small {
+  font-size: inherit;
+  letter-spacing: .04em;
+  text-transform: none;
   color: var(--muted);
   font-weight: 400;
 }
 
+/* Experiência: tabela tipo "schedule", só as linhas que separam colunas */
+
+.posts {
+  margin-bottom: 50px;
+}
+
+.schedule {
+  width: 100%;
+  margin: 0 0 50px;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+}
+
+table.schedule th,
+table.schedule td {
+  border: 0;
+  border-left: 1px solid var(--border);
+  padding: 4px 16px;
+  font-size: .9rem;
+  text-align: left;
+  background: none;
+}
+
+table.schedule thead th {
+  padding-block: 9px;
+  border-bottom: 1px solid var(--border);
+  font-size: .7rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.schedule tbody tr:first-child td { padding-top: 12px; }
+.schedule tbody tr:last-child td { padding-bottom: 12px; }
+
+.schedule td:first-child {
+  color: var(--heading);
+}
+
+table.schedule th:last-child,
+table.schedule td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
 @media (max-width: 600px) {
-  .xp li {
-    flex-direction: column;
-    gap: 2px;
+  .schedule,
+  .schedule tbody {
+    display: block;
+  }
+
+  .schedule thead {
+    display: none;
+  }
+
+  .schedule tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 6px 0;
+  }
+
+  table.schedule td {
+    border: 0;
+    padding: 0 12px;
+  }
+
+  .schedule td:nth-child(2) {
+    grid-row: 2;
+    color: var(--muted);
+  }
+
+  .schedule td:last-child {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    align-self: center;
+  }
+
+  .schedule tbody tr:first-child td,
+  .schedule tbody tr:last-child td {
+    padding-block: 0;
   }
 }
 
-/* Post list */
+/* Post list: título, pontilhado guia e data, como num índice */
 
 ul {
   list-style: none;
@@ -453,16 +511,22 @@ ul {
 }
 
 li.post {
-  padding: 12px 0;
-  border-bottom: 1px dashed var(--border);
+  padding: 5px 0;
   display: flex;
-  justify-content: space-between;
   align-items: baseline;
-  gap: 16px;
+  gap: 12px;
 }
 
-li.post:first-child {
-  border-top: 1px dashed var(--border);
+li.post::before {
+  content: '';
+  order: 1;
+  flex: 1;
+  min-width: 24px;
+  border-bottom: 1px dotted var(--muted);
+}
+
+li.post time {
+  order: 2;
 }
 
 li.post a {
@@ -882,6 +946,10 @@ footer {
   li.post {
     flex-direction: column;
     gap: 2px;
+  }
+
+  li.post::before {
+    display: none;
   }
 
   .hero {
